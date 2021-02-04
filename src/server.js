@@ -2,7 +2,8 @@ require("./db/connection");
 //will run file inside server file, connection.js only job is to connect to mongoDB
 const express = require("express");
 //imports express 
-const { userRouter } = require("./routes/users");
+const cors = require("cors");
+const { userRouter } = require("./routes/user");
 const { postRouter } = require("./routes/posts");
 
 const port = process.env.PORT || 5000;
@@ -11,6 +12,7 @@ const app = express();
 
 app.use(express.json());
 //converts data to json
+app.use(cors());
 app.use(userRouter);
 app.use(postRouter);
 

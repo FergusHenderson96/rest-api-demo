@@ -12,7 +12,9 @@ const postSchema = new mongoose.Schema(
     },
     author: {
       type: mongoose.Schema.Types.ObjectId,
+      //
       required: true,
+      //cant be saved in database unless it has an author
     },
   },
   { timestamps: true }

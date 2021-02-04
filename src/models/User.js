@@ -16,6 +16,7 @@ const userSchema = new mongoose.Schema(
     },
   },
   { timestamps: true }
+  //shows times it created and last updated
 );
 
 const User = mongoose.model("User", userSchema);

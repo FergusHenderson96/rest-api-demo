@@ -3,6 +3,7 @@ const { Post } = require("../models/Post");
 exports.getAllPosts = async (req, res) => {
   try {
     const allPosts = await Post.find({});
+    //gets all posts listed in the database and logs data
     res.status(200).send(allPosts);
   } catch (error) {
     console.log(error);
@@ -13,6 +14,7 @@ exports.getAllPosts = async (req, res) => {
 exports.getPostsByUser = async (req, res) => {
   try {
     const allPosts = await Post.find({ author: req.params.user_id });
+    //find method returns an array of all results. this finds all posts by author by user id
     res.status(200).send(allPosts);
   } catch (error) {
     res.status(404).send({ message: "user not found" });
