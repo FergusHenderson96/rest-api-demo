@@ -1,23 +1,31 @@
 const { User } = require("../models/User");
 
-exports.getAllUsers = async (req, res) => {
-  //this function gets users details and lists 
-  try {
-    const allUsers = await User.find({});
-    res.status(200).send(allUsers);
-  } catch (error) {
-    res.status(500).send(error);
-  }
+// exports.getAllUsers = async (req, res) => {
+//   //this function gets users details and lists 
+//   try {
+//     const allUsers = await User.find({});
+//     res.status(200).send(allUsers);
+//   } catch (error) {
+//     res.status(500).send(error);
+//   }
+// };
+exports.getMyProfile = async (req, res) => {
+  res.status(200).send(req.user)
 };
 
 exports.addUser = async (req, res) => {
   //this function adds a user to the database
   try {
     const user = new User(req.body);
+    const token = await user.generateAuthToken();
     const savedUser = await user.save();
     console.log(req.body);
-    res.status(201).send(savedUser);
+    res.status(201).send({ savedUser, token });
+    //({savedUser: savedUser, token: token})
   } catch (error) {
+    if(error.code === 11000) {
+      res.status(400).send({ message: "User already exists" });
+    }
     res.status(500).send({ message: "Could not connect" });
   }
 };
@@ -45,3 +53,13 @@ exports.deleteUser = async (req, res) => {
     res.status(404).send({ message: "User not found" });
   }
 };
+
+exports.login = async (req, res) => {
+  try {
+    const user = User.findByCredentials(req.body.email, req.body.password);
+    const token = user.generateAuthToken();
+    res.status(200).send({user, token});
+  } catch (error) {
+    res.status(400).send({message: "Unable to login"});
+  }
+}
