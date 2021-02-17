@@ -33,7 +33,7 @@ exports.addUser = async (req, res) => {
 exports.updateUserById = async (req, res) => {
   //this function updates a users details by searching their id
   try {
-    const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const user = await User.findByIdAndUpdate(req.user._id, req.body, { new: true });
     //searches for user     finds user by id   id given    new password   
     console.log(user);
     res.status(200).send(user);
@@ -47,7 +47,8 @@ exports.updateUserById = async (req, res) => {
 exports.deleteUser = async (req, res) => {
   //this function deletes a user by id
   try {
-    const user = await User.findByIdAndDelete(req.params.id);
+    const user = await User.findByIdAndDelete(req.user._id);
+    await req.user.remove();
     res.status(200).send(user);
   } catch (error) {
     res.status(404).send({ message: "User not found" });
@@ -56,10 +57,22 @@ exports.deleteUser = async (req, res) => {
 
 exports.login = async (req, res) => {
   try {
-    const user = User.findByCredentials(req.body.email, req.body.password);
-    const token = user.generateAuthToken();
+    const user = await User.findByCredentials(req.body.email, req.body.password);
+    const token = await user.generateAuthToken();
     res.status(200).send({user, token});
   } catch (error) {
     res.status(400).send({message: "Unable to login"});
+  }
+}
+
+exports.logout = async (req, res) => {
+  try {
+req.user.tokens = req.user.tokens.filter((tokenObj) => { 
+ return tokenObj.token !== req.token;
+})
+await req.user.save()
+res.status(200).send({message: "Successfully logged out"})
+  } catch {
+res.status(500).send({message: "Unable to log you out"})
   }
 }

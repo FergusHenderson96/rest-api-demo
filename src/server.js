@@ -10,9 +10,9 @@ const port = process.env.PORT || 5000;
 const app = express();
 //creates an instance of express 
 
+app.use(cors());
 app.use(express.json());
 //converts data to json
-app.use(cors());
 app.use(userRouter);
 app.use(postRouter);
 

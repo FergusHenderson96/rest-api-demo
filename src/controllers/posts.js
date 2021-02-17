@@ -13,7 +13,7 @@ exports.getAllPosts = async (req, res) => {
 
 exports.getPostsByUser = async (req, res) => {
   try {
-    const allPosts = await Post.find({ author: req.params.user_id });
+    const allPosts = await Post.find({ author: req.user_id });
     //find method returns an array of all results. this finds all posts by author by user id
     res.status(200).send(allPosts);
   } catch (error) {
@@ -27,6 +27,7 @@ exports.addPost = async (req, res) => {
     // const user = await User.findById(req.params.user_id);
     // user.posts.push(post);
     // const returnedValue = await user.save();
+    console.log(req.body);
     const post = new Post(req.body);
     post.author = req.params.user_id;
     const returnedValue = await post.save();
